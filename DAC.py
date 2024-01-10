@@ -10,6 +10,11 @@ import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg, NavigationToolbar2Tk)
 import capture_waveforms
 from datetime import datetime
+from multiprocessing import Process
+from multiprocessing import Queue
+
+import serial_communication
+
 
 __author__ = "Spencer Pollard"
 __credits__ = ["Spencer Pollard", "Shane Mayor"]
@@ -22,7 +27,19 @@ def plot_waveform(axes, the_canvas,the_toolbar, the_text_widget, sample_text_wid
     try:
         num_samples = int(sample_text_widget.get())
         sample_rate = int(sample_rate_text_widget.get())
-        x, data = capture_waveforms.collect_waveform_data(num_samples, sample_rate)
+
+        # create two processes to happen at the same time
+        q = Queue()
+        p1 = Process(target=capture_waveforms.collect_waveform_data, args=(num_samples, sample_rate, q,))
+        p2 = Process(target=serial_communication.serial_write)
+        p1.start()
+        p2.start()
+
+        # need to figure out how to get the return values from processes
+
+        # x, data = capture_waveforms.collect_waveform_data(num_samples, sample_rate)
+        x = q.get()
+        data = q.get()
 
         # plot the data
         axes.clear() # clear current axes

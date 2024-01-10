@@ -2,11 +2,14 @@
 capture_waveforms.py: This script is responsible for collecting waveform data using the NI DAQ PCI-5122 Oscilloscope Card.
 """
 import nidaqmx as ni
+import time
+from multiprocessing import Queue
 
 __author__ = "Spencer Pollard"
 __credits__ = ["Spencer Pollard", "Shane Mayor"]
 
-def collect_waveform_data(num_of_samples, passed_sample_rate):
+def collect_waveform_data(num_of_samples, passed_sample_rate, queue):
+    print(time.time())
     # create variables for number of samples and desired sample rate
     sample = num_of_samples
     sample_rate = passed_sample_rate
@@ -27,6 +30,9 @@ def collect_waveform_data(num_of_samples, passed_sample_rate):
             data.append(i)
 
     x = list(range(len(data)))
+
+    queue.put(x)
+    queue.put(data)
 
     return x, data
 
