@@ -17,18 +17,19 @@ commands that open this temporary file to write appropriate commands to it
 # class to house the program that is to be uploaded to the motor
 class AnimaticsProgram:
     # constructors
-    def __init__(self):
+    def __init__(self, file_path=None, file_name=None):
         self.file_data = "RUN\n"
         self.file_path = "./temp"
         self.file_name = "temp"
-    def __init__(self, file_name):
-        self.file_data = "RUN\n"
-        self.file_name = file_name
-    def __init__(self, file_path, file_name):
-        self.file_data = "RUN\n"
-        self.file_path = file_path
-        self.file_name = file_name
-    
+        if file_path == None:
+            if file_name != None:
+                self.file_name = file_name
+        elif file_name == None:
+            if file_path != None:
+                self.file_path = file_path
+        else:
+            self.file_name = file_name
+            self.file_path = file_path   
 
     # program creation
     def createProgram(self):
@@ -39,7 +40,8 @@ class AnimaticsProgram:
                 print("[createProgram ERROR]: Invalid file path or file path already exists")
 
         try:
-            open(f"{self.file_path}/{self.file_name}", "a")
+            with open(f"{self.file_path}/{self.file_name}", "a") as programFile:
+                programFile.write("RUN\n")
         except:
             print("[createProgram ERROR]: Failed to create temp file")
 
@@ -51,23 +53,28 @@ class AnimaticsProgram:
     def setFilePath(self, file_path):
         self.file_path = file_path
 
-
-    # getters
-
-    # other methods
     def setVelocity(self, passed_velocity):
         try:
-            with open(f"{self.file_path}/{self.file_name}", "w") as programFile:
+            with open(f"{self.file_path}/{self.file_name}", "a") as programFile:
                 programFile.write(f"V={passed_velocity}\n")
                 programFile.close()
             self.file_data += f"V={passed_velocity}\n"
         except:
             print("[setVelocity ERROR]: Failed to open temp file")
 
+    def setAcceleration(self, passed_acceleration):
 
+        return -1
+
+
+    # getters
+    def getFileData(self):
+        return self.file_data
+
+    # other methods
     def uploadProgram(self,):
         try:
-            with open(f"{self.file_path}/{self.file_name}", "w") as programFile:
+            with open(f"{self.file_path}/{self.file_name}", "a") as programFile:
                 programFile.write(f"END\n")
                 # do the serial writing stuff
                 programFile.close()
@@ -76,13 +83,10 @@ class AnimaticsProgram:
             print("[uploadProgram ERROR]: Failed to open temp file")
 
 
-# 
-def setAcceleration(passed_acceleration):
-
-    return -1
-
 if __name__ == "__main__":
     program = AnimaticsProgram(file_name="SM1")
 
     program.createProgram()
+    program.setVelocity(100)
+    program.uploadProgram()
     
