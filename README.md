@@ -1,1 +1,2 @@
 # This repository is for storing the current progress of the new data acquisition software for the REAL at Chico State.
+All current progress on Chico State's LiDAR system can be found [here](https://lidar.csuchico.edu/)
