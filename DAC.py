@@ -35,9 +35,6 @@ def plot_waveform(axes, the_canvas,the_toolbar, the_text_widget, sample_text_wid
         p1.start()
         p2.start()
 
-        # need to figure out how to get the return values from processes
-
-        # x, data = capture_waveforms.collect_waveform_data(num_samples, sample_rate)
         x = q.get()
         data = q.get()
 
