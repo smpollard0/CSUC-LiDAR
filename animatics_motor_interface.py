@@ -63,8 +63,22 @@ class AnimaticsProgram:
             print("[setVelocity ERROR]: Failed to open temp file")
 
     def setAcceleration(self, passed_acceleration):
+        try:
+            with open(f"{self.file_path}/{self.file_name}", "a") as programFile:
+                programFile.write(f"A={passed_acceleration}\n")
+                programFile.close()
+            self.file_data += f"A={passed_acceleration}\n"
+        except:
+            print("[setAcceleration ERROR]: Failed to open temp file")
 
-        return -1
+    def setPosition(self, passed_position):
+        try:
+            with open(f"{self.file_path}/{self.file_name}", "a") as programFile:
+                programFile.write(f"P={passed_position}\n")
+                programFile.close()
+            self.file_data += f"P={passed_position}\n"
+        except:
+            print("[setAcceleration ERROR]: Failed to open temp file")
 
 
     # getters
@@ -82,11 +96,56 @@ class AnimaticsProgram:
         except:
             print("[uploadProgram ERROR]: Failed to open temp file")
 
+    def writePRINT(self, passed_string):
+        try:
+            with open(f"{self.file_path}/{self.file_name}", "a") as programFile:
+                programFile.write(f"PRINT({passed_string})\n")
+                programFile.close()
+            self.file_data += f"PRINT({passed_string})\n"
+        except:
+            print("[writePRINT ERROR]: Failed to open temp file")
+
+    def resetErrorFlag(self):
+        try:
+            with open(f"{self.file_path}/{self.file_name}", "a") as programFile:
+                programFile.write("ZS\n")
+                programFile.close()
+            self.file_data += "ZS\n"
+        except:
+            print("[resetErrorFlag ERROR]: Failed to open temp file")
+    
+    def writeGo(self):
+        try:
+            with open(f"{self.file_path}/{self.file_name}", "a") as programFile:
+                programFile.write("G\n")
+                programFile.close()
+            self.file_data += "G\n"
+        except:
+            print("[writeGo ERROR]: Failed to open temp file")
+
+    def writeTWAIT(self):
+        try:
+            with open(f"{self.file_path}/{self.file_name}", "a") as programFile:
+                programFile.write("TWAIT\n")
+                programFile.close()
+            self.file_data += "TWAIT\n"
+        except:
+            print("[writeTWAIT ERROR]: Failed to open temp file")
+
 
 if __name__ == "__main__":
-    program = AnimaticsProgram(file_name="SM1")
+    program = AnimaticsProgram(file_name="SM1.sms")
 
     program.createProgram()
-    program.setVelocity(100)
+    program.resetErrorFlag()
+    program.setAcceleration(100)
+    program.setVelocity(1000000)
+    program.setPosition(100000)
+    program.writeGo()
+    program.writeTWAIT()
+    program.setPosition(0)
+    program.writeGo()
+    program.writePRINT('"Program Finished :D",#13')
     program.uploadProgram()
+
     
