@@ -22,8 +22,8 @@ __credits__ = ["Spencer Pollard", "Shane Mayor"]
 # this function is meant to collect the data coming into the DAQ NI card and plot it in the GUI
 def plot_waveform(axes, the_canvas,the_toolbar, the_text_widget, sample_text_widget, sample_rate_text_widget):
     # get the sample rate and number of samples from the text boxes
-    x = []
-    data = []
+    x = [] # might be unneeded
+    data = [] # might be unneeded
     try:
         num_samples = int(sample_text_widget.get())
         sample_rate = int(sample_rate_text_widget.get())
@@ -31,7 +31,7 @@ def plot_waveform(axes, the_canvas,the_toolbar, the_text_widget, sample_text_wid
         # create two processes to happen at the same time
         q = Queue()
         p1 = Process(target=capture_waveforms.collect_waveform_data, args=(num_samples, sample_rate, q,))
-        p2 = Process(target=serial_communication.serial_write)
+        p2 = Process(target=serial_communication.serial_write) # change this target when I have a proper way of manipulating the motors
         p1.start()
         p2.start()
 
