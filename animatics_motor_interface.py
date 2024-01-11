@@ -6,6 +6,8 @@ __author__ = "Spencer Pollard"
 __credits__ = ["Spencer Pollard", "Shane Mayor"]
 
 import os
+import time
+import serial
 
 '''
 how I think I should make python interface with the motor
@@ -85,12 +87,48 @@ class AnimaticsProgram:
         return self.file_path
 
     # other methods
+    def __serial_write(self):
+        print(time.time())
+        # open a program designed to spin the motor
+        temp = ""
+        try:
+            temp = self.file_data
+        except:
+            raise Exception("Something happend idk")
+
+        # mostly works? currently I believe there is a timing issue where I'm sending bytes before I receieve confirmation of the ones I just sent
+        with serial.Serial('COM1', 9600) as ser:
+            remaining_chars = len(bytes(temp, 'ascii'))
+            # try to send every 8 bytes
+            for i in range(0, len(bytes(temp, 'ascii')), 8):
+                # if there 8 or more bytes available, write those
+                if remaining_chars > 8:
+                    # create byte array of the next 8 bytes and send those
+                    sub_packet = bytearray(b'')
+                    for j in range(8):
+                        sub_packet.append(bytes(temp, 'ascii')[i+j])
+                    remaining_chars -= 8
+                    
+                else:
+                    sub_packet = bytearray(b'')
+                    for k in range(remaining_chars):
+                        sub_packet.append(bytes(temp, 'ascii')[i+k])
+                    remaining_chars -= remaining_chars
+                
+                ser.write(sub_packet)
+                time.sleep(0.5) # this is a weird work around to my current issue
+                read_bytes = ser.read_all()
+                print(read_bytes.decode('utf-8'))
+            ser.close()
+
+
     def uploadProgram(self):
         try:
             with open(f"{self.file_path}/{self.file_name}", "a") as programFile:
                 programFile.write(f"END\n")
                 # do the serial writing stuff
                 programFile.close()
+            self.__serial_write()
             self.file_data += "END\n"
             self.isRunning = True
         except:
