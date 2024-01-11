@@ -20,8 +20,6 @@ def serial_write(file_path):
     except:
         raise Exception("Invalid file path")
 
-    temp_in_ascii = temp.encode('ascii')
-
     # mostly works? currently I believe there is a timing issue where I'm sending bytes before I receieve confirmation of the ones I just sent
     with serial.Serial('COM1', 9600) as ser:
         remaining_chars = len(bytes(temp, 'ascii'))
