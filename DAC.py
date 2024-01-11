@@ -8,11 +8,11 @@ from tkinter import messagebox
 import tkinter as tk
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg, NavigationToolbar2Tk)
-import capture_waveforms
 from datetime import datetime
 from multiprocessing import Process
 from multiprocessing import Queue
 
+import capture_waveforms
 import serial_communication
 
 
