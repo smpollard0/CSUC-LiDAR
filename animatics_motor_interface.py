@@ -39,13 +39,6 @@ class AnimaticsProgram:
             except:
                 print("[createProgram ERROR]: Invalid file path or file path already exists")
 
-        # try:
-        #     with open(f"{self.file_path}/{self.file_name}", "a") as programFile:
-        #         programFile.write("RUN\n")
-        # except:
-        #     print("[createProgram ERROR]: Failed to create temp file")
-
-
     # setters
     def setFileName(self, file_name):
         self.file_name = file_name
