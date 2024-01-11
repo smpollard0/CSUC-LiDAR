@@ -14,7 +14,7 @@ __credits__ = ["Spencer Pollard", "Shane Mayor"]
 
 def edgeCounting(num_of_samples, passed_sample_rate):
     sample = num_of_samples
-    sample_rate = passed_sample_rate
+    sample_rate = passed_sample_rate # for the motor this should be the highest frequency of the pulse train I believe
 
     count = 0
 
@@ -23,10 +23,13 @@ def edgeCounting(num_of_samples, passed_sample_rate):
         task.ci_channels.add_ci_count_edges_chan(counter="Dev2/ctr0")
         
         # configure the card's timing to allow for continous data collection 
-        task.timing.cfg_samp_clk_timing(rate=sample_rate, sample_mode=ni.constants.AcquisitionType.CONTINUOUS, samps_per_chan=sample)
-        temp = task.read(number_of_samples_per_channel=sample)
+        task.timing.cfg_samp_clk_timing(rate=sample_rate, source="/Dev2/PFI8") # encoder A from the motor is screw terminal 37 which is pfi8
+        temp = task.read(number_of_samples_per_channel=ni.constants.READ_ALL_AVAILABLE, timeout=-1) # wait forever until it's acquired the desired number of samples
+        print(temp)
 
-        # place all data from temp into data array
+
+
+        
         
 
 if __name__ == "__main__":
