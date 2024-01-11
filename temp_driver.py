@@ -3,7 +3,6 @@ from animatics_motor_interface import AnimaticsProgram
 def test():
     file_name = "pythonCreated.sms"
     program = AnimaticsProgram(file_name=file_name)
-    full_file_path = program.getFilePath() + "/" + file_name
 
     # create and write program
     program.createProgram()
