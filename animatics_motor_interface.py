@@ -89,8 +89,9 @@ class AnimaticsProgram:
     # other methods
     def __serial_write(self):
         print(time.time())
-        
+
         # mostly works? currently I believe there is a timing issue where I'm sending bytes before I receieve confirmation of the ones I just sent
+        # CURRENT ISSUE: PROGRAM SHOULD WAIT TO READ BEFORE TRYING TO WRITE AGAIN
         with serial.Serial('COM1', 9600) as ser:
             remaining_chars = len(bytes(self.file_data, 'ascii'))
             # try to send every 8 bytes
@@ -110,7 +111,7 @@ class AnimaticsProgram:
                     remaining_chars -= remaining_chars
                 
                 ser.write(sub_packet)
-                time.sleep(0.5) # this is a weirdwork around to my current issue
+                time.sleep(1) # this is a weirdwork around to my current issue
                 read_bytes = ser.read_all()
                 print(read_bytes.decode('utf-8'))
             ser.close()
