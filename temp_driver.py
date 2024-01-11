@@ -15,7 +15,10 @@ def test():
     program.writeTWAIT()
     program.setPosition(0)
     program.writeGo()
-    program.writePRINT('"Program Finished :D",#13')
 
     # upload the program
     program.uploadProgram()
+
+
+if __name__ == "__main__":
+    test()

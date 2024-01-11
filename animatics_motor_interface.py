@@ -90,43 +90,42 @@ class AnimaticsProgram:
     def __serial_write(self):
         print(time.time())
 
-        # mostly works? currently I believe there is a timing issue where I'm sending bytes before I receieve confirmation of the ones I just sent
-        # CURRENT ISSUE: PROGRAM SHOULD WAIT TO READ BEFORE TRYING TO WRITE AGAIN
-        with serial.Serial('COM1', 9600) as ser:
+        # mostly works?
+        # CURRENT ISSUE: there's some issue with writing the bytes too quickly which is why there's a time.sleep()
+        with serial.Serial('COM1', 9600, timeout=2) as ser:
             remaining_chars = len(bytes(self.file_data, 'ascii'))
-            # try to send every 8 bytes
+            # send every 8 bytes
             for i in range(0, len(bytes(self.file_data, 'ascii')), 8):
+                # create byte array of the next 8 bytes and send those
+                sub_packet = bytearray(b'')
                 # if there 8 or more bytes available, write those
                 if remaining_chars > 8:
-                    # create byte array of the next 8 bytes and send those
-                    sub_packet = bytearray(b'')
                     for j in range(8):
                         sub_packet.append(bytes(self.file_data, 'ascii')[i+j])
                     remaining_chars -= 8
                     
                 else:
-                    sub_packet = bytearray(b'')
                     for k in range(remaining_chars):
                         sub_packet.append(bytes(self.file_data, 'ascii')[i+k])
                     remaining_chars -= remaining_chars
                 
                 ser.write(sub_packet)
-                time.sleep(1) # this is a weirdwork around to my current issue
-                read_bytes = ser.read_all()
-                print(read_bytes.decode('utf-8'))
+                time.sleep(1) # weird workaround for timing issue
+                ser.read(8)
+
             ser.close()
 
 
     def uploadProgram(self):
-        try:
-            with open(f"{self.file_path}/{self.file_name}", "a") as programFile:
-                programFile.write(f"END\n")
-                programFile.close()
-            self.__serial_write()
-            self.file_data += "END\n"
-            self.isRunning = True
-        except:
-            print("[uploadProgram ERROR]: Failed to open temp file")
+        # try:
+        with open(f"{self.file_path}/{self.file_name}", "a") as programFile:
+            programFile.write(f"END\n")
+            programFile.close()
+        self.__serial_write()
+        self.file_data += "END\n"
+        self.isRunning = True
+        # except:
+        #     print("[uploadProgram ERROR]: Failed to open temp file")
 
     def writePRINT(self, passed_string):
         try:
@@ -135,7 +134,7 @@ class AnimaticsProgram:
                 programFile.close()
             self.file_data += f"PRINT({passed_string})\n"
         except:
-            print("[writePRINT ERROR]: Failed to open temp file")
+            print("[writePRINT ERROR]: Failed to open temp file or port is already being used")
 
     def resetErrorFlag(self):
         try:
