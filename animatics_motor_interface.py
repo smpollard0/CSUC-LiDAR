@@ -141,4 +141,4 @@ if __name__ == "__main__":
     program.writePRINT('"Program Finished :D",#13')
     program.uploadProgram()
 
-    
+    print(program.getFileData())
