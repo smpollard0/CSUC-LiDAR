@@ -163,21 +163,3 @@ class AnimaticsProgram:
             self.file_data += "TWAIT\n"
         except:
             print("[writeTWAIT ERROR]: Failed to open temp file")
-
-
-if __name__ == "__main__":
-    program = AnimaticsProgram(file_name="pythonCreated.sms")
-
-    program.createProgram()
-    program.resetErrorFlag()
-    program.setAcceleration(100)
-    program.setVelocity(1000000)
-    program.setPosition(100000)
-    program.writeGo()
-    program.writeTWAIT()
-    program.setPosition(0)
-    program.writeGo()
-    program.writePRINT('"Program Finished :D",#13')
-    program.uploadProgram()
-
-    print(program.getFileData())
