@@ -28,7 +28,6 @@ def edgeCounting(num_of_samples, passed_sample_rate):
         t_end = time.time() + 15
         while time.time() < t_end:
             result = task.read(number_of_samples_per_channel=ni.constants.READ_ALL_AVAILABLE, timeout=120)[-1]
-            print(result)
 
         # end task
         task.control(ni.constants.TaskMode.TASK_STOP)
