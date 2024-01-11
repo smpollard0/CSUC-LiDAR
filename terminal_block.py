@@ -30,5 +30,5 @@ def edgeCounting():
         print(f"Final Count: {result}")
 
 if __name__ == "__main__":
-    edgeCounting(10000,100000000)
+    edgeCounting()
         
