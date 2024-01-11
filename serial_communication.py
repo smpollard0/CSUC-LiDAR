@@ -12,7 +12,7 @@ def serial_write():
     print(time.time())
     # open a program designed to spin the motor
     temp = ""
-    with open("../../Animatics Motors SMX Files/SMI1.sms", "r") as inFile:
+    with open("./temp/pythonCreated.sms", "r") as inFile:
         for line in inFile:
             temp += line
         inFile.close()
@@ -48,3 +48,6 @@ def serial_write():
             read_bytes = ser.read_all()
             print(read_bytes.decode('utf-8'))
         ser.close()
+
+if __name__ == "__main__":
+    serial_write()

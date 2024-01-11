@@ -18,7 +18,7 @@ commands that open this temporary file to write appropriate commands to it
 class AnimaticsProgram:
     # constructors
     def __init__(self, file_path=None, file_name=None):
-        self.file_data = "RUN\n"
+        self.file_data = ""
         self.file_path = "./temp"
         self.file_name = "temp"
         if file_path == None:
@@ -39,11 +39,11 @@ class AnimaticsProgram:
             except:
                 print("[createProgram ERROR]: Invalid file path or file path already exists")
 
-        try:
-            with open(f"{self.file_path}/{self.file_name}", "a") as programFile:
-                programFile.write("RUN\n")
-        except:
-            print("[createProgram ERROR]: Failed to create temp file")
+        # try:
+        #     with open(f"{self.file_path}/{self.file_name}", "a") as programFile:
+        #         programFile.write("RUN\n")
+        # except:
+        #     print("[createProgram ERROR]: Failed to create temp file")
 
 
     # setters
@@ -134,7 +134,7 @@ class AnimaticsProgram:
 
 
 if __name__ == "__main__":
-    program = AnimaticsProgram(file_name="SM1.sms")
+    program = AnimaticsProgram(file_name="pythonCreated.sms")
 
     program.createProgram()
     program.resetErrorFlag()
