@@ -8,14 +8,17 @@ import time
 __author__ = "Spencer Pollard"
 __credits__ = ["Spencer Pollard", "Shane Mayor"]
 
-def serial_write():
+def serial_write(file_path):
     print(time.time())
     # open a program designed to spin the motor
     temp = ""
-    with open("./temp/pythonCreated.sms", "r") as inFile:
-        for line in inFile:
-            temp += line
-        inFile.close()
+    try:
+        with open(file_path, "r") as inFile:
+            for line in inFile:
+                temp += line
+            inFile.close()
+    except:
+        raise Exception("Invalid file path")
 
     temp_in_ascii = temp.encode('ascii')
     temp_in_hex = temp_in_ascii.hex()
@@ -44,7 +47,7 @@ def serial_write():
                 remaining_chars -= remaining_chars
             
             ser.write(sub_packet)
-            time.sleep(1)
+            time.sleep(0.5)
             read_bytes = ser.read_all()
             print(read_bytes.decode('utf-8'))
         ser.close()
