@@ -12,7 +12,7 @@ from datetime import datetime
 from multiprocessing import Process
 from multiprocessing import Queue
 
-import capture_waveforms
+from capture_waveforms import collect_waveform_data
 from temp_driver import test
 
 
@@ -30,7 +30,7 @@ def plot_waveform(axes, the_canvas,the_toolbar, the_text_widget, sample_text_wid
 
         # create two processes to happen at the same time
         q = Queue()
-        p1 = Process(target=capture_waveforms.collect_waveform_data, args=(num_samples, sample_rate, q,))
+        p1 = Process(target=collect_waveform_data, args=(num_samples, sample_rate, q,))
         p2 = Process(target=test) # change this target when I have a proper way of manipulating the motors
         p1.start()
         p2.start()
