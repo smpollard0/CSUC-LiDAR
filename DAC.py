@@ -13,7 +13,7 @@ from multiprocessing import Process
 from multiprocessing import Queue
 
 import capture_waveforms
-import serial_communication
+from temp_driver import test
 
 
 __author__ = "Spencer Pollard"
@@ -31,7 +31,7 @@ def plot_waveform(axes, the_canvas,the_toolbar, the_text_widget, sample_text_wid
         # create two processes to happen at the same time
         q = Queue()
         p1 = Process(target=capture_waveforms.collect_waveform_data, args=(num_samples, sample_rate, q,))
-        p2 = Process(target=serial_communication.serial_write) # change this target when I have a proper way of manipulating the motors
+        p2 = Process(target=test) # change this target when I have a proper way of manipulating the motors
         p1.start()
         p2.start()
 
