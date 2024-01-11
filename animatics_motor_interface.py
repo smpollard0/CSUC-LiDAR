@@ -132,9 +132,7 @@ class AnimaticsProgram:
 
 
 if __name__ == "__main__":
-    file_name = "pythonCreated.sms"
-    program = AnimaticsProgram(file_name=file_name)
-    file_path = program.getfile
+    program = AnimaticsProgram(file_name="pythonCreated.sms")
 
     program.createProgram()
     program.resetErrorFlag()
