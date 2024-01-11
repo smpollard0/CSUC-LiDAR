@@ -21,6 +21,7 @@ class AnimaticsProgram:
         self.file_data = ""
         self.file_path = "./temp"
         self.file_name = "temp"
+        self.isRunning = False
         if file_path == None:
             if file_name != None:
                 self.file_name = file_name
@@ -77,15 +78,19 @@ class AnimaticsProgram:
     # getters
     def getFileData(self):
         return self.file_data
+    
+    def getFilePath(self):
+        return self.file_path
 
     # other methods
-    def uploadProgram(self,):
+    def uploadProgram(self):
         try:
             with open(f"{self.file_path}/{self.file_name}", "a") as programFile:
                 programFile.write(f"END\n")
                 # do the serial writing stuff
                 programFile.close()
             self.file_data += "END\n"
+            self.isRunning = True
         except:
             print("[uploadProgram ERROR]: Failed to open temp file")
 
@@ -127,7 +132,9 @@ class AnimaticsProgram:
 
 
 if __name__ == "__main__":
-    program = AnimaticsProgram(file_name="pythonCreated.sms")
+    file_name = "pythonCreated.sms"
+    program = AnimaticsProgram(file_name=file_name)
+    file_path = program.getfile
 
     program.createProgram()
     program.resetErrorFlag()
