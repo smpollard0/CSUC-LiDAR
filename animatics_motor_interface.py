@@ -39,6 +39,8 @@ class AnimaticsProgram:
                 os.makedirs(self.file_path)
             except:
                 print("[createProgram ERROR]: Invalid file path or file path already exists")
+        if os.path.isfile(f"{self.file_path}/{self.file_name}"):
+            os.remove(f"{self.file_path}/{self.file_name}")
 
     # setters
     def setFileName(self, file_name):
