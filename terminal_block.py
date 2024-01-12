@@ -10,7 +10,8 @@ __credits__ = ["Spencer Pollard", "Shane Mayor"]
 
 # figure out how to use the scc-ft01 cards on the scc-68 with the pcie-6323
 
-def edgeCounting():
+def edge_counting():
+    print(f"Edge counting start: {time.time()}")
     with ni.Task() as task:
         # create counter input task to count rising edges (default setting) on the Dev2/ctr0 channel
         task.ci_channels.add_ci_count_edges_chan(counter="/Dev2/ctr0", name_to_assign_to_channel="countEdges")
@@ -28,7 +29,8 @@ def edgeCounting():
         task.control(ni.constants.TaskMode.TASK_STOP)
         
         print(f"Final Count: {result}")
+        print(f"Edge counting end: {time.time()}")
 
 if __name__ == "__main__":
-    edgeCounting()
+    edge_counting()
         
