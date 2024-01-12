@@ -15,7 +15,7 @@ def edge_counting_encoderA():
     print(f"Edge counting A start: {time.time()}")
     with ni.Task() as task:
         # create counter input task to count rising edges (default setting) on the Dev2/ctr0 channel
-        task.ci_channels.add_ci_count_edges_chan(counter="/Dev2/ctr0", name_to_assign_to_channel="countEdges")
+        task.ci_channels.add_ci_count_edges_chan(counter="/Dev2/ctr0", name_to_assign_to_channel="countEdges") # PFI8 => pin 37
 
         result = 0
 
@@ -36,7 +36,7 @@ def edge_counting_encoderB():
     print(f"Edge counting B start: {time.time()}")
     with ni.Task() as task:
         # create counter input task to count rising edges (default setting) on the Dev2/ctr0 channel
-        task.ci_channels.add_ci_count_edges_chan(counter="/Dev2/ctr1", name_to_assign_to_channel="countEdges")
+        task.ci_channels.add_ci_count_edges_chan(counter="/Dev2/ctr1", name_to_assign_to_channel="countEdges") # PFI3 => pin 42
 
         result = 0
 
