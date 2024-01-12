@@ -3,13 +3,13 @@ capture_waveforms.py: This script is responsible for collecting waveform data us
 """
 import nidaqmx as ni
 import time
-from multiprocessing import Queue
+import multiprocessing
 
 __author__ = "Spencer Pollard"
 __credits__ = ["Spencer Pollard", "Shane Mayor"]
 
 def collect_waveform_data(num_of_samples, passed_sample_rate, queue):
-    print(time.time())
+    print(f"Collect waveform start: {time.time()}")
     # create variables for number of samples and desired sample rate
     sample = num_of_samples
     sample_rate = passed_sample_rate
@@ -34,5 +34,6 @@ def collect_waveform_data(num_of_samples, passed_sample_rate, queue):
     queue.put(x)
     queue.put(data)
 
+    print(f"Collect waveform end: {time.time()}")
     return x, data
 

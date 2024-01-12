@@ -87,9 +87,8 @@ class AnimaticsProgram:
         return self.file_path
 
     # other methods
+    # some other logic needs to be here, I need to either figure out the timing with sending and receiving data, or physically calculate how long each command takes to run before trying to send another one
     def __serial_write(self):
-        print(time.time())
-
         # mostly works?
         # CURRENT ISSUE: there's some issue with writing the bytes too quickly which is why there's a time.sleep()
         with serial.Serial('COM1', 9600, timeout=2) as ser:

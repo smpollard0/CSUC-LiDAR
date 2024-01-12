@@ -22,8 +22,6 @@ __credits__ = ["Spencer Pollard", "Shane Mayor"]
 # this function is meant to collect the data coming into the DAQ NI card and plot it in the GUI
 def plot_waveform(axes, the_canvas,the_toolbar, the_text_widget, sample_text_widget, sample_rate_text_widget):
     # get the sample rate and number of samples from the text boxes
-    x = [] # might be unneeded
-    data = [] # might be unneeded
     try:
         num_samples = int(sample_text_widget.get())
         sample_rate = int(sample_rate_text_widget.get())
@@ -71,7 +69,7 @@ if __name__ == "__main__":
     # set the default size of the window
     root.geometry("1000x1000")
 
-    root.title("LIDAR Data Acquisition Software")
+    root.title("LiDAR Data Acquisition Software")
 
     label = Label(root, text="Data Acquisition").pack()
 
