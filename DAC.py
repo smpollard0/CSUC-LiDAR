@@ -13,7 +13,7 @@ from multiprocessing import Process, Queue
 
 from capture_waveforms import collect_waveform_data
 from temp_driver import test
-from terminal_block import edge_counting
+from terminal_block import edge_counting_encoderA, edge_counting_encoderB
 
 
 __author__ = "Spencer Pollard"
@@ -28,12 +28,14 @@ def plot_waveform(axes, the_canvas,the_toolbar, the_text_widget, sample_text_wid
 
         # create two processes to happen at the same time
         q = Queue()
-        p1 = Process(target=collect_waveform_data, args=(num_samples, sample_rate, q,))
-        p2 = Process(target=test) # change this target when I have a proper way of manipulating the motors
-        p3 = Process(target=edge_counting)
-        p1.start()
-        p2.start()
-        p3.start()
+        waveform = Process(target=collect_waveform_data, args=(num_samples, sample_rate, q,))
+        testing = Process(target=test) # change this target when I have a proper way of manipulating the motors
+        encoderA = Process(target=edge_counting_encoderA)
+        encoderB = Process(target=edge_counting_encoderB)
+        waveform.start()
+        testing.start()
+        encoderA.start()
+        encoderB.start()
 
         x = q.get()
         data = q.get()
