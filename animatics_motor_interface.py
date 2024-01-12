@@ -12,7 +12,7 @@ import serial
 '''
 how I think I should make python interface with the motor
 
-init command to create a temporary script file that will be used to program the motor
+init command to create a temporary script file that will be used to log the program to the motor
 commands that open this temporary file to write appropriate commands to it
 '''
 
@@ -117,15 +117,15 @@ class AnimaticsProgram:
 
 
     def uploadProgram(self):
-        # try:
-        with open(f"{self.file_path}/{self.file_name}", "a") as programFile:
-            programFile.write(f"END\n")
-            programFile.close()
-        self.__serial_write()
-        self.file_data += "END\n"
-        self.isRunning = True
-        # except:
-        #     print("[uploadProgram ERROR]: Failed to open temp file")
+        try:
+            with open(f"{self.file_path}/{self.file_name}", "a") as programFile:
+                programFile.write(f"END\n")
+                programFile.close()
+            self.__serial_write()
+            self.file_data += "END\n"
+            self.isRunning = True
+        except:
+            print("[uploadProgram ERROR]: Failed to open temp file or write over serial")
 
     def writePRINT(self, passed_string):
         try:
@@ -154,6 +154,7 @@ class AnimaticsProgram:
         except:
             print("[writeGo ERROR]: Failed to open temp file")
 
+    # i think there needs to be more done here...
     def writeTWAIT(self):
         try:
             with open(f"{self.file_path}/{self.file_name}", "a") as programFile:
