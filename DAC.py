@@ -30,8 +30,8 @@ def plot_waveform(axes, the_canvas,the_toolbar, the_text_widget, sample_text_wid
         q = Queue()
         waveform = Process(target=collect_waveform_data, args=(num_samples, sample_rate, q,))
         testing = Process(target=test) # change this target when I have a proper way of manipulating the motors
-        encoderA = Process(target=edge_counting_encoderA)
-        encoderB = Process(target=edge_counting_encoderB)
+        encoderA = Process(target=edge_counting_encoderA, args=(q,))
+        encoderB = Process(target=edge_counting_encoderB, args=(q,))
         waveform.start()
         testing.start()
         encoderA.start()
@@ -39,6 +39,10 @@ def plot_waveform(axes, the_canvas,the_toolbar, the_text_widget, sample_text_wid
 
         x = q.get()
         data = q.get()
+        encoderA_count = q.get()
+        encoderB_count = q.get()
+
+        print(f"Encoder A Count: {encoderA_count}\nEncoder B Count: {encoderB_count}")
 
         # plot the data
         axes.clear() # clear current axes
@@ -54,7 +58,7 @@ def plot_waveform(axes, the_canvas,the_toolbar, the_text_widget, sample_text_wid
         the_text_widget.insert(tk.END, get_date_and_time() + "\n")
         the_text_widget.configure(state='disabled')
     except:
-        messagebox.showerror('Input Error','[ERROR] Invalid number of samples or sampling rate')
+        messagebox.showerror('Input Error','[ERROR] Invalid number of samples or sampling rate') # this error isn't entirely accurate considering all the multiprocessing above
         the_text_widget.configure(state='normal')
         the_text_widget.insert(tk.END, get_date_and_time() + ' [ERROR]\n')
         the_text_widget.configure(state='disabled')

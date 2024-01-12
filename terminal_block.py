@@ -4,14 +4,14 @@ terminal_block.py: This script is attempting to interface the NI DAQ PCIe-6323 M
 
 import nidaqmx as ni
 import time
-from multiprocessing import Process
+from multiprocessing import Process, Queue
 
 __author__ = "Spencer Pollard"
 __credits__ = ["Spencer Pollard", "Shane Mayor"]
 
 # figure out how to use the scc-ft01 cards on the scc-68 with the pcie-6323
 
-def edge_counting_encoderA():
+def edge_counting_encoderA(queue):
     print(f"Edge counting A start: {time.time()}")
     with ni.Task() as task:
         # create counter input task to count rising edges (default setting) on the Dev2/ctr0 channel
@@ -29,10 +29,12 @@ def edge_counting_encoderA():
         # end task
         task.control(ni.constants.TaskMode.TASK_STOP)
         
-        print(f"Final Count: {result}")
+        queue.put(result)
         print(f"Edge counting A end: {time.time()}")
 
-def edge_counting_encoderB():
+        return result
+
+def edge_counting_encoderB(queue):
     print(f"Edge counting B start: {time.time()}")
     with ni.Task() as task:
         # create counter input task to count rising edges (default setting) on the Dev2/ctr0 channel
@@ -50,8 +52,10 @@ def edge_counting_encoderB():
         # end task
         task.control(ni.constants.TaskMode.TASK_STOP)
         
-        print(f"Final Count: {result}")
         print(f"Edge counting B end: {time.time()}")
+        queue.put(result)
+
+        return result
 
 if __name__ == "__main__":
     encoderA = Process(target=edge_counting_encoderA)
