@@ -20,8 +20,8 @@ class MainWindow(QMainWindow):
         file_dialog.setFileMode(QFileDialog.Directory)
         file_dialog.exec()
 
-        self.write_directory = file_dialog.selectedFiles()
-        print(self.write_directory[0])
+        self.write_directory = file_dialog.selectedFiles()[0]
+        print(self.write_directory)
 
     def __init__(self):
         super().__init__()
@@ -34,7 +34,7 @@ class MainWindow(QMainWindow):
         # menu bar configuration
         menu_bar = self.menuBar()
         file = menu_bar.addMenu('File')
-
+        help = menu_bar.addMenu('Help')
     
         file.addAction("Change Write to Disk Location")
         file.triggered.connect(self.set_directory)
@@ -67,6 +67,20 @@ class MainWindow(QMainWindow):
         vbox3.addWidget(azal_angles)
         vbox3.addWidget(LED2)
 
+        # add display boxes for azimuth and elevation angles
+        az_label = QLabel()
+        el_label = QLabel()
+        az_label.setText("0")
+        el_label.setText("0")
+        az_label.setAlignment(Qt.AlignCenter)
+        el_label.setAlignment(Qt.AlignCenter)
+        az_label.setFrameStyle(QFrame.Panel)
+        el_label.setFrameStyle(QFrame.Panel)
+        az_label.setLineWidth(2)
+        el_label.setLineWidth(2)
+        vbox3.addWidget(az_label)
+        vbox3.addWidget(el_label)
+
         # get pulse energy group
         vbox4 = QHBoxLayout()
         group4 = QGroupBox()
@@ -77,6 +91,15 @@ class MainWindow(QMainWindow):
         LED3.setDisabled(True)
         vbox4.addWidget(pulse_energy)
         vbox4.addWidget(LED3)
+
+        # add display box for pulse energy
+        pulse_label = QLabel()
+        pulse_label.setText("0")
+        pulse_label.setText("0")
+        pulse_label.setAlignment(Qt.AlignCenter)
+        pulse_label.setFrameStyle(QFrame.Panel)
+        pulse_label.setLineWidth(2)
+        vbox4.addWidget(pulse_label)
         
         # get date/time group
         vbox5 = QHBoxLayout()
@@ -89,6 +112,20 @@ class MainWindow(QMainWindow):
         vbox5.addWidget(date_time)
         vbox5.addWidget(LED4)
 
+        # add display boxes for date and time
+        date_label = QLabel()
+        time_label = QLabel()
+        date_label.setText("0")
+        time_label.setText("0")
+        date_label.setAlignment(Qt.AlignCenter)
+        time_label.setAlignment(Qt.AlignCenter)
+        date_label.setFrameStyle(QFrame.Panel)
+        time_label.setFrameStyle(QFrame.Panel)
+        date_label.setLineWidth(2)
+        time_label.setLineWidth(2)
+        vbox5.addWidget(date_label)
+        vbox5.addWidget(time_label)
+
         # get Pitch and Roll group
         vbox6 = QHBoxLayout()
         group6 = QGroupBox()
@@ -99,8 +136,22 @@ class MainWindow(QMainWindow):
         LED5.setDisabled(True)
         vbox6.addWidget(pitch_roll)
         vbox6.addWidget(LED5)
+
+        # add display boxes for pitch and roll
+        pitch_label = QLabel()
+        roll_label = QLabel()
+        pitch_label.setText("0")
+        roll_label.setText("0")
+        pitch_label.setAlignment(Qt.AlignCenter)
+        roll_label.setAlignment(Qt.AlignCenter)
+        pitch_label.setFrameStyle(QFrame.Panel)
+        roll_label.setFrameStyle(QFrame.Panel)
+        pitch_label.setLineWidth(2)
+        roll_label.setLineWidth(2)
+        vbox6.addWidget(pitch_label)
+        vbox6.addWidget(roll_label)
         
-        # get temp and pressure group
+        # get temperature and pressure group
         vbox7 = QHBoxLayout()
         group7 = QGroupBox()
         group7.setLayout(vbox7)
@@ -110,6 +161,20 @@ class MainWindow(QMainWindow):
         LED6.setDisabled(True)
         vbox7.addWidget(temp_press)
         vbox7.addWidget(LED6)
+
+        # add display boxes for temperature and pressure
+        temp_label = QLabel()
+        press_label = QLabel()
+        temp_label.setText("0")
+        press_label.setText("0")
+        temp_label.setAlignment(Qt.AlignCenter)
+        press_label.setAlignment(Qt.AlignCenter)
+        temp_label.setFrameStyle(QFrame.Panel)
+        press_label.setFrameStyle(QFrame.Panel)
+        temp_label.setLineWidth(2)
+        press_label.setLineWidth(2)
+        vbox7.addWidget(temp_label)
+        vbox7.addWidget(press_label)
 
         # broadcast setting
         vbox8 = QHBoxLayout()
