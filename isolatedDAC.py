@@ -11,6 +11,11 @@ __credits__ = ["Spencer Pollard", "Shane Mayor"]
 def change_led(LED):
     LED.setChecked(not LED.isChecked())
 
+def set_directory():
+    file_dialog = QFileDialog()
+    file_dialog.setFileMode(QFileDialog.Directory)
+    file_dialog.exec()
+
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
@@ -20,12 +25,15 @@ class MainWindow(QMainWindow):
 
         # menu bar configuration
         menu_bar = self.menuBar()
-        menu_bar.addMenu('File')
+        file = menu_bar.addMenu('File')
+
+        file.addAction("Change Write to Disk Location")
+        file.triggered.connect(set_directory) # need function call for something to happen when this is called
 
 
         # main groupbox for the window
         # overall group for different data acquisition processes
-        group1 = QGroupBox("Status of Data Acquisition")
+        group1 = QGroupBox("Status of Data Acquisition Processes")
         vbox1 = QVBoxLayout()
         group1.setLayout(vbox1)
 
