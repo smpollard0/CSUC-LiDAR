@@ -156,7 +156,7 @@ class MainWindow(QMainWindow):
         group7 = QGroupBox()
         group7.setLayout(vbox7)
 
-        temp_press = QLabel("Get Raman Tempertature and Pressure")
+        temp_press = QLabel("Get Raman Temperature and Pressure")
         LED6 = LedIndicator()
         LED6.setDisabled(True)
         vbox7.addWidget(temp_press)
