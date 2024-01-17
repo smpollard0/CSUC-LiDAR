@@ -2,18 +2,28 @@
 isolatedDAC.py: This program is meant to replace the old DAC.py file as a more isolated program. This program will be strictly displaying and monitoring the data acquisition process and NOt focusing on displaying data.
 """
 
-from PyQt5.QtWidgets import QApplication, QLabel, QGroupBox, QVBoxLayout, QHBoxLayout
+from PyQt5.QtWidgets import QApplication
 from LedIndicatorWidget import *
 
 __author__ = "Spencer Pollard"
 __credits__ = ["Spencer Pollard", "Shane Mayor"]
 
+def change_led(LED):
+    LED.setChecked(not LED.isChecked())
+
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
 
+        # main window settings
         self.setWindowTitle("LiDAR Data Acquisition Software")
 
+        # menu bar configuration
+        menu_bar = self.menuBar()
+        menu_bar.addMenu('File')
+
+
+        # main groupbox for the window
         # overall group for different data acquisition processes
         group1 = QGroupBox("Status of Data Acquisition")
         vbox1 = QVBoxLayout()
@@ -85,6 +95,48 @@ class MainWindow(QMainWindow):
         vbox7.addWidget(temp_press)
         vbox7.addWidget(LED6)
 
+        # broadcast setting
+        vbox8 = QHBoxLayout()
+        group8 = QGroupBox()
+        group8.setLayout(vbox8)
+
+        broadcast = QLabel("Broadcast")
+        LED7 = LedIndicator()
+        LED7.setDisabled(True)
+        LED7.on_color_1 = QColor(0,255,0)
+        LED7.off_color_1 = QColor(255,0,0)
+        LED7.off_color_2 = QColor(255,0,0)
+        vbox8.addWidget(broadcast)
+        vbox8.addWidget(LED7)
+
+        button1 = QPushButton()
+        button1.setText("Toggle")
+        button1.clicked.connect(lambda: change_led(LED7))
+
+        vbox8.addWidget(button1)
+
+        # disk write setting
+        vbox9 = QHBoxLayout()
+        group9 = QGroupBox()
+        group9.setLayout(vbox9)
+
+        disk_write = QLabel("Disk Write")
+        LED8 = LedIndicator()
+        LED8.setDisabled(True)
+        LED8.on_color_1 = QColor(0,255,0)
+        LED8.off_color_1 = QColor(255,0,0)
+        LED8.off_color_2 = QColor(255,0,0)
+        vbox9.addWidget(disk_write)
+        vbox9.addWidget(LED8)
+
+        button2 = QPushButton()
+        button2.setText("Toggle")
+        button2.clicked.connect(lambda: change_led(LED8))
+
+        vbox9.addWidget(button2)
+        
+
+
         # add comprising widgets into master groupbox
         vbox1.addWidget(group2)
         vbox1.addWidget(group3)
@@ -92,7 +144,10 @@ class MainWindow(QMainWindow):
         vbox1.addWidget(group5)
         vbox1.addWidget(group6)
         vbox1.addWidget(group7)
+        vbox1.addWidget(group8)
+        vbox1.addWidget(group9)
 
+        # set the central widget of the window
         self.setCentralWidget(group1)
     
 
@@ -100,7 +155,6 @@ class MainWindow(QMainWindow):
 if __name__ == "__main__":
     app = QApplication([])
     window = MainWindow()
-
 
     window.show()
     app.exec_()
