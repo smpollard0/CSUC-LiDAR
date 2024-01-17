@@ -8,28 +8,36 @@ from LedIndicatorWidget import *
 __author__ = "Spencer Pollard"
 __credits__ = ["Spencer Pollard", "Shane Mayor"]
 
+write_directory = "./"
+
 def change_led(LED):
     LED.setChecked(not LED.isChecked())
 
-def set_directory():
-    file_dialog = QFileDialog()
-    file_dialog.setFileMode(QFileDialog.Directory)
-    file_dialog.exec()
-
 class MainWindow(QMainWindow):
+
+    def set_directory(self):
+        file_dialog = QFileDialog()
+        file_dialog.setFileMode(QFileDialog.Directory)
+        file_dialog.exec()
+
+        self.write_directory = file_dialog.selectedFiles()
+        print(self.write_directory[0])
+
     def __init__(self):
         super().__init__()
+        
 
         # main window settings
         self.setWindowTitle("LiDAR Data Acquisition Software")
+        self.write_directory = "./"
 
         # menu bar configuration
         menu_bar = self.menuBar()
         file = menu_bar.addMenu('File')
 
+    
         file.addAction("Change Write to Disk Location")
-        file.triggered.connect(set_directory) # need function call for something to happen when this is called
-
+        file.triggered.connect(self.set_directory)
 
         # main groupbox for the window
         # overall group for different data acquisition processes
