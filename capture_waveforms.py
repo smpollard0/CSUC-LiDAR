@@ -18,7 +18,7 @@ def collect_waveform_data(num_of_samples, passed_sample_rate, LED, bool_to_write
         # create an NI task
         with ni.Task() as task:
             LED.setChecked(True)
-            # create an analog input voltage channel which has device name Dev where /0 indicates the specific channel on the card
+            # create an analog input voltage channel which has device name Dev where /1 indicates the specific channel on the card
             task.ai_channels.add_ai_voltage_chan(physical_channel="Dev1/1")
             
             # configure the card's timing to allow for continous data collection 

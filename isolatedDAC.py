@@ -45,6 +45,8 @@ def trigger_helper(LED):
                     prev_time = current_time
                     current_time = time.time()
                     print(current_time - prev_time)
+                    # here would be a call to collect waveform data
+                    # but i think there's an issue if the waveform collection channel has different settings than the trigger channel
                 elif result < 4.9 and LED.isChecked():
                     LED.setChecked(False)
                     prev_time = current_time
