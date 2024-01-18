@@ -36,28 +36,28 @@ def trigger_helper(LED):
         current_time = 0
 
         # this just runs in the background while the program is running
-        # I am abusing an unhandled exception to make this thread stop once the LED object stops existing
         while True:
-            result = task.read(number_of_samples_per_channel=ni.constants.READ_ALL_AVAILABLE)[-1]
-            # print(result)
-            if result >= 4.9 and not LED.isChecked():
-                LED.setChecked(True)
-
-                prev_time = current_time
-                current_time = time.time()
-                print(current_time - prev_time)
-            elif result < 4.9 and LED.isChecked():
-                LED.setChecked(False)
-                prev_time = current_time
-                current_time = time.time()
-                print(current_time - prev_time)
-
+            try:
+                result = task.read(number_of_samples_per_channel=ni.constants.READ_ALL_AVAILABLE)[-1]
+                # print(result)
+                if result >= 4.9 and not LED.isChecked():
+                    LED.setChecked(True)
+                    prev_time = current_time
+                    current_time = time.time()
+                    print(current_time - prev_time)
+                elif result < 4.9 and LED.isChecked():
+                    LED.setChecked(False)
+                    prev_time = current_time
+                    current_time = time.time()
+                    print(current_time - prev_time)
+            except:
+                break
+            
 def update_trigger_led(LED):
     p1 = ProcessRunnable(target=trigger_helper, args=(LED,))
     p1.start()
 
 class MainWindow(QMainWindow):
-
     def set_directory(self):
         file_dialog = QFileDialog()
         file_dialog.setFileMode(QFileDialog.Directory)
@@ -276,8 +276,6 @@ class MainWindow(QMainWindow):
 
         vbox9.addWidget(button2)
         
-
-
         # add comprising widgets into master groupbox
         vbox1.addWidget(group10)
         vbox1.addWidget(group2)
@@ -289,11 +287,9 @@ class MainWindow(QMainWindow):
         vbox1.addWidget(group8)
         vbox1.addWidget(group9)
         
-
         # set the central widget of the window
         self.setCentralWidget(group1)
     
-
 # can use fbs to make this code into a distributable executable
 if __name__ == "__main__":
     app = QApplication([])
