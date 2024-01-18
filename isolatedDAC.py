@@ -30,8 +30,18 @@ def trigger_helper(LED):
     with ni.Task() as task:
          # create an analog input voltage channel which has device name Dev where /0 indicates the specific channel on the card
         task.ai_channels.add_ai_voltage_chan(physical_channel="Dev1/0")
-        
-        
+
+        result = 0
+
+        # something is wrong with how fast it's reading
+        while True:
+            result = task.read(timeout=120)
+            print(result)
+            if result >= 4.9 :
+                LED.setChecked(True)
+            else:
+                LED.setChecked(False)       
+
 
 def update_trigger_led(LED):
     p1 = ProcessRunnable(target=trigger_helper, args=(LED,))
@@ -79,6 +89,7 @@ class MainWindow(QMainWindow):
         LED9 = LedIndicator()
         LED9.setDisabled(True)
         LED9.on_color_1 = QColor(255,0,0)
+        LED9.on_color_2 = QColor(255,0,0)
         LED9.off_color_1 = QColor(0,0,0)
         LED9.off_color_2 = QColor(0,0,0)
         vbox10.addWidget(trigger_pulse)
