@@ -1,17 +1,41 @@
 """
-isolatedDAC.py: This program is meant to replace the old DAC.py file as a more isolated program. This program will be strictly displaying and monitoring the data acquisition process and NOt focusing on displaying data.
+isolatedDAC.py: This program is meant to replace the old DAC.py file as a more isolated program. This program will be strictly displaying and monitoring the data acquisition processes and NOT focusing on displaying data.
 """
 
 from PyQt5.QtWidgets import QApplication
 from LedIndicatorWidget import *
+import nidaqmx as ni
+import time
+
 
 __author__ = "Spencer Pollard"
 __credits__ = ["Spencer Pollard", "Shane Mayor"]
 
-write_directory = "./"
+class ProcessRunnable(QRunnable):
+    def __init__(self, target, args):
+        QRunnable.__init__(self)
+        self.t = target
+        self.args = args
+
+    def run(self):
+        self.t(*self.args)
+
+    def start(self):
+        QThreadPool.globalInstance().start(self)
 
 def change_led(LED):
     LED.setChecked(not LED.isChecked())
+
+def trigger_helper(LED):
+    with ni.Task() as task:
+         # create an analog input voltage channel which has device name Dev where /0 indicates the specific channel on the card
+        task.ai_channels.add_ai_voltage_chan(physical_channel="Dev1/0")
+        
+        
+
+def update_trigger_led(LED):
+    p1 = ProcessRunnable(target=trigger_helper, args=(LED,))
+    p1.start()
 
 class MainWindow(QMainWindow):
 
@@ -26,7 +50,6 @@ class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         
-
         # main window settings
         self.setWindowTitle("LiDAR Data Acquisition Software")
         self.write_directory = "./"
@@ -35,6 +58,8 @@ class MainWindow(QMainWindow):
         menu_bar = self.menuBar()
         file = menu_bar.addMenu('File')
         help = menu_bar.addMenu('Help')
+
+        # create action for help for whatever may go in that menu
     
         file.addAction("Change Write to Disk Location")
         file.triggered.connect(self.set_directory)
@@ -44,6 +69,21 @@ class MainWindow(QMainWindow):
         group1 = QGroupBox("Status of Data Acquisition Processes")
         vbox1 = QVBoxLayout()
         group1.setLayout(vbox1)
+
+        # status light flashing
+        vbox10 = QHBoxLayout()
+        group10 = QGroupBox()
+        group10.setLayout(vbox10)
+
+        trigger_pulse = QLabel("Trigger Pulse")
+        LED9 = LedIndicator()
+        LED9.setDisabled(True)
+        LED9.on_color_1 = QColor(255,0,0)
+        LED9.off_color_1 = QColor(0,0,0)
+        LED9.off_color_2 = QColor(0,0,0)
+        vbox10.addWidget(trigger_pulse)
+        vbox10.addWidget(LED9)
+        update_trigger_led(LED9)
 
         # waveform group
         vbox2 = QHBoxLayout()
@@ -219,6 +259,7 @@ class MainWindow(QMainWindow):
 
 
         # add comprising widgets into master groupbox
+        vbox1.addWidget(group10)
         vbox1.addWidget(group2)
         vbox1.addWidget(group3)
         vbox1.addWidget(group4)
@@ -227,6 +268,7 @@ class MainWindow(QMainWindow):
         vbox1.addWidget(group7)
         vbox1.addWidget(group8)
         vbox1.addWidget(group9)
+        
 
         # set the central widget of the window
         self.setCentralWidget(group1)
