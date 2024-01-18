@@ -7,7 +7,6 @@ from LedIndicatorWidget import *
 import nidaqmx as ni
 import time
 
-
 __author__ = "Spencer Pollard"
 __credits__ = ["Spencer Pollard", "Shane Mayor"]
 
@@ -33,15 +32,25 @@ def trigger_helper(LED):
 
         result = 0
 
-        # something is wrong with how fast it's reading
-        while True:
-            result = task.read(timeout=120)
-            print(result)
-            if result >= 4.9 :
-                LED.setChecked(True)
-            else:
-                LED.setChecked(False)       
+        prev_time = 0
+        current_time = 0
 
+        # this just runs in the background while the program is running
+        # I am abusing an unhandled exception to make this thread stop once the LED object stops existing
+        while True:
+            result = task.read(number_of_samples_per_channel=ni.constants.READ_ALL_AVAILABLE)[-1]
+            # print(result)
+            if result >= 4.9 and not LED.isChecked():
+                LED.setChecked(True)
+
+                prev_time = current_time
+                current_time = time.time()
+                print(current_time - prev_time)
+            elif result < 4.9 and LED.isChecked():
+                LED.setChecked(False)
+                prev_time = current_time
+                current_time = time.time()
+                print(current_time - prev_time)
 
 def update_trigger_led(LED):
     p1 = ProcessRunnable(target=trigger_helper, args=(LED,))
