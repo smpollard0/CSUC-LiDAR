@@ -18,6 +18,7 @@ def quadrature_encoder(queue):
     y = []
 
     with ni.Task() as task:
+        # To use ctr0, the two encoder channels are plugged into PFI 8 and PFI 10 (37 and 45 on SCC-68)
         task.ci_channels.add_ci_ang_encoder_chan(counter="/Dev2/ctr0", 
                                                  name_to_assign_to_channel="encoder", 
                                                  decoding_type=ni.constants.EncoderType.X_1, # originally was X_1
