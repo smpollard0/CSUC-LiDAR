@@ -1,11 +1,17 @@
 """
-isolatedDAC.py: This program is meant to replace the old DAC.py file as a more isolated program. This program will be strictly displaying and monitoring the data acquisition processes and NOT focusing on displaying data.
+isolatedDAC.py: This program is meant to replace the old DAC.py file as a more isolated program. This program will be strictly displaying and 
+monitoring the data acquisition processes and NOT focusing on displaying data.
 """
+
+from laser_pulse_energy import Molectron
 
 from PyQt5.QtWidgets import QApplication
 from LedIndicatorWidget import *
 import nidaqmx as ni
+import niscope
 import time
+import numpy as np
+import serial
 
 __author__ = "Spencer Pollard"
 __credits__ = ["Spencer Pollard", "Shane Mayor"]
@@ -26,38 +32,66 @@ def change_led(LED):
     LED.setChecked(not LED.isChecked())
 
 def trigger_helper(LED):
-    with ni.Task() as task:
-         # create an analog input voltage channel which has device name Dev where /0 indicates the specific channel on the card
-        task.ai_channels.add_ai_voltage_chan(physical_channel="Dev1/0")
-
-        result = 0
-
-        prev_time = 0
-        current_time = 0
-
         # this just runs in the background while the program is running
         while True:
-            try:
-                result = task.read(number_of_samples_per_channel=ni.constants.READ_ALL_AVAILABLE)[-1]
-                # print(result)
-                if result >= 4.9 and not LED.isChecked():
+            # Create a session for the device
+            with niscope.Session('Dev1') as session:
+                # Configure vertical settings for channel 0
+                session.channels['1'].configure_vertical(
+                    range=5.0,  # Vertical range in volts
+                    coupling=niscope.VerticalCoupling.DC
+                )
+
+                # Configure horizontal timing
+                session.configure_horizontal_timing(
+                    # if the min sample rate >= min num pts you get discontinuities
+                    min_sample_rate=1_000_000,  # 1 MS/s
+                    min_num_pts=500_000,           # Number of points per record
+                    ref_position=50.0,          # Position of the trigger in percentage
+                    num_records=1,              # Number of records
+                    enforce_realtime=True
+                )
+
+                # Configure edge trigger with external source
+                session.configure_trigger_edge(
+                    trigger_source='VAL_EXTERNAL',       # External trigger source
+                    trigger_coupling=niscope.TriggerCoupling.DC,
+                    level=1.0,                           # Trigger level in volts
+                    slope=niscope.TriggerSlope.POSITIVE  # Trigger on rising edge
+                )
+
+                # Initiate acquisition
+                with session.initiate():
+                    # Fetch data from channel 0
+                    print('Waiting for trigger...')
+                    waveforms = session.channels['1'].fetch(num_records=1,timeout=-1)
+                    voltage_data = np.array(waveforms[0].samples)  # Extract voltage data
+                    print(voltage_data)
                     LED.setChecked(True)
-                    prev_time = current_time
-                    current_time = time.time()
-                    print(current_time - prev_time)
-                    # here would be a call to collect waveform data
-                    # but i think there's an issue if the waveform collection channel has different settings than the trigger channel
-                elif result < 4.9 and LED.isChecked():
+                    time.sleep(0.05)
                     LED.setChecked(False)
-                    prev_time = current_time
-                    current_time = time.time()
-                    print(current_time - prev_time)
-            except:
-                break
             
 def update_trigger_led(LED):
     p1 = ProcessRunnable(target=trigger_helper, args=(LED,))
     p1.start()
+
+def pulse_helper(meter):
+    meter.writeCommand("out cont on")
+    ser = serial.Serial(port=meter.get_port(), 
+                        baudrate=meter.get_baud(), 
+                        parity=meter.get_parity(), 
+                        stopbits=meter.get_stop_bit(), 
+                        timeout=meter.get_timeout())
+    
+    while True:
+        s = ser.readline().decode('utf-8').strip()
+        print(s)
+
+    ser.close()
+
+def update_pulse_energy(meter):
+    p2 = ProcessRunnable(target=pulse_helper, args=(meter,))
+    p2.start()
 
 class MainWindow(QMainWindow):
     def set_directory(self):
@@ -71,6 +105,16 @@ class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         
+        # Variables to be declare at start up
+        port = 'COM1'
+        baud = 38400
+        parity = 'N'
+        stopbits = 1
+        timeout = 2
+        meter = Molectron(port, baud, parity, stopbits, timeout)
+
+        # Need some variable to track if the program is collecting data
+
         # main window settings
         self.setWindowTitle("LiDAR Data Acquisition Software")
         self.write_directory = "./"
@@ -153,8 +197,10 @@ class MainWindow(QMainWindow):
         LED3.setDisabled(True)
         vbox4.addWidget(pulse_energy)
         vbox4.addWidget(LED3)
+        update_pulse_energy(meter)
 
         # add display box for pulse energy
+        # edit later to account for 2 pulse energies
         pulse_label = QLabel()
         pulse_label.setText("0")
         pulse_label.setText("0")
