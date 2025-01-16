@@ -44,7 +44,7 @@ def trigger_helper(LED):
 
                 # Configure horizontal timing
                 session.configure_horizontal_timing(
-                    # if the min sample rate >= min num pts you get discontinuities
+                    # If the min sample rate >= min num pts you get discontinuities
                     min_sample_rate=1_000_000,  # 1 MS/s
                     min_num_pts=500_000,           # Number of points per record
                     ref_position=50.0,          # Position of the trigger in percentage
@@ -105,7 +105,7 @@ class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         
-        # Variables to be declare at start up
+        # Variables to be declared at start up
         port = 'COM1'
         baud = 38400
         parity = 'N'
@@ -113,7 +113,7 @@ class MainWindow(QMainWindow):
         timeout = 2
         meter = Molectron(port, baud, parity, stopbits, timeout)
 
-        # Need some variable to track if the program is collecting data
+        # Need some variable to track if the program is collecting data (also can be used to know when flyback is happening)
 
         # main window settings
         self.setWindowTitle("LiDAR Data Acquisition Software")
